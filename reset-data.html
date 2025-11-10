@@ -1,0 +1,733 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Database Management - PWA Store</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'SF Pro Text', 'Segoe UI', 'Roboto', 'Helvetica Neue', sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height: 100vh;
+      padding: 40px 20px;
+      color: #1d1d1f;
+    }
+
+    .container {
+      max-width: 800px;
+      margin: 0 auto;
+    }
+
+    .header {
+      text-align: center;
+      color: white;
+      margin-bottom: 40px;
+    }
+
+    .header h1 {
+      font-size: 42px;
+      font-weight: 700;
+      margin-bottom: 12px;
+      letter-spacing: -0.02em;
+    }
+
+    .header p {
+      font-size: 18px;
+      opacity: 0.9;
+    }
+
+    .card {
+      background: white;
+      border-radius: 20px;
+      padding: 32px;
+      margin-bottom: 24px;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+      animation: slideIn 0.5s ease;
+    }
+
+    @keyframes slideIn {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .card h2 {
+      font-size: 24px;
+      font-weight: 600;
+      margin-bottom: 8px;
+      color: #1d1d1f;
+    }
+
+    .card p {
+      color: #6e6e73;
+      margin-bottom: 20px;
+      line-height: 1.6;
+    }
+
+    .warning {
+      background: #fff3cd;
+      border-left: 4px solid #ffc107;
+      padding: 16px;
+      border-radius: 8px;
+      margin-bottom: 20px;
+    }
+
+    .warning strong {
+      color: #856404;
+      display: block;
+      margin-bottom: 4px;
+    }
+
+    .warning p {
+      color: #856404;
+      margin: 0;
+      font-size: 14px;
+    }
+
+    .success {
+      background: #d4edda;
+      border-left: 4px solid #28a745;
+      padding: 16px;
+      border-radius: 8px;
+      margin-bottom: 20px;
+    }
+
+    .success strong {
+      color: #155724;
+      display: block;
+      margin-bottom: 4px;
+    }
+
+    .success p {
+      color: #155724;
+      margin: 0;
+      font-size: 14px;
+    }
+
+    .error {
+      background: #f8d7da;
+      border-left: 4px solid #dc3545;
+      padding: 16px;
+      border-radius: 8px;
+      margin-bottom: 20px;
+    }
+
+    .error strong {
+      color: #721c24;
+      display: block;
+      margin-bottom: 4px;
+    }
+
+    .error p {
+      color: #721c24;
+      margin: 0;
+      font-size: 14px;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 14px 28px;
+      border: none;
+      border-radius: 12px;
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      text-decoration: none;
+      gap: 8px;
+      width: 100%;
+      margin-bottom: 12px;
+    }
+
+    .btn:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+
+    .btn-danger {
+      background: #ff3b30;
+      color: white;
+      box-shadow: 0 4px 12px rgba(255, 59, 48, 0.3);
+    }
+
+    .btn-danger:hover:not(:disabled) {
+      background: #e6342a;
+      transform: translateY(-2px);
+      box-shadow: 0 6px 16px rgba(255, 59, 48, 0.4);
+    }
+
+    .btn-warning {
+      background: #ff9f0a;
+      color: white;
+      box-shadow: 0 4px 12px rgba(255, 159, 10, 0.3);
+    }
+
+    .btn-warning:hover:not(:disabled) {
+      background: #e68f09;
+      transform: translateY(-2px);
+      box-shadow: 0 6px 16px rgba(255, 159, 10, 0.4);
+    }
+
+    .btn-success {
+      background: #30d158;
+      color: white;
+      box-shadow: 0 4px 12px rgba(48, 209, 88, 0.3);
+    }
+
+    .btn-success:hover:not(:disabled) {
+      background: #2bbc4f;
+      transform: translateY(-2px);
+      box-shadow: 0 6px 16px rgba(48, 209, 88, 0.4);
+    }
+
+    .btn-primary {
+      background: #0071e3;
+      color: white;
+      box-shadow: 0 4px 12px rgba(0, 113, 227, 0.3);
+    }
+
+    .btn-primary:hover:not(:disabled) {
+      background: #0077ed;
+      transform: translateY(-2px);
+      box-shadow: 0 6px 16px rgba(0, 113, 227, 0.4);
+    }
+
+    .btn-outline {
+      background: transparent;
+      color: #0071e3;
+      border: 2px solid #0071e3;
+    }
+
+    .btn-outline:hover:not(:disabled) {
+      background: #0071e3;
+      color: white;
+      transform: translateY(-2px);
+    }
+
+    .spinner {
+      display: inline-block;
+      width: 16px;
+      height: 16px;
+      border: 2px solid rgba(255, 255, 255, 0.3);
+      border-top: 2px solid white;
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+    }
+
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+      gap: 16px;
+      margin-bottom: 24px;
+    }
+
+    .stat-card {
+      background: #f5f5f7;
+      padding: 20px;
+      border-radius: 12px;
+      text-align: center;
+    }
+
+    .stat-card .number {
+      font-size: 32px;
+      font-weight: 700;
+      color: #0071e3;
+      margin-bottom: 4px;
+    }
+
+    .stat-card .label {
+      font-size: 14px;
+      color: #6e6e73;
+    }
+
+    .back-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      color: white;
+      text-decoration: none;
+      font-weight: 500;
+      margin-bottom: 24px;
+      transition: all 0.3s ease;
+    }
+
+    .back-link:hover {
+      transform: translateX(-4px);
+    }
+
+    #message {
+      display: none;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <a href="http://localhost:3000" class="back-link">
+      ← Back to Store
+    </a>
+
+    <div class="header">
+      <h1>🗄️ Database Management</h1>
+      <p>Manage your store's data - Clear and repopulate products & orders</p>
+    </div>
+
+    <div id="message"></div>
+
+    <!-- Statistics -->
+    <div class="card">
+      <h2>Current Database Stats</h2>
+      <p>Overview of your current database</p>
+      <div class="stats" id="stats">
+        <div class="stat-card">
+          <div class="number" id="userCount">-</div>
+          <div class="label">Users</div>
+        </div>
+        <div class="stat-card">
+          <div class="number" id="productCount">-</div>
+          <div class="label">Products</div>
+        </div>
+        <div class="stat-card">
+          <div class="number" id="orderCount">-</div>
+          <div class="label">Orders</div>
+        </div>
+        <div class="stat-card">
+          <div class="number" id="reviewCount">-</div>
+          <div class="label">Reviews</div>
+        </div>
+      </div>
+      <button onclick="loadStats()" class="btn btn-outline">
+        🔄 Refresh Stats
+      </button>
+    </div>
+
+    <!-- Clear Data -->
+    <div class="card">
+      <h2>🗑️ Clear Data</h2>
+      <p>Remove products, orders, and reviews while keeping user accounts intact</p>
+      
+      <div class="warning">
+        <strong>⚠️ Warning</strong>
+        <p>These operations will permanently delete data. User accounts will always be preserved.</p>
+      </div>
+
+      <div style="background: #f5f5f7; padding: 16px; border-radius: 12px; margin-bottom: 20px; font-size: 14px; color: #6e6e73;">
+        <strong style="color: #1d1d1f; display: block; margin-bottom: 8px;">Clear Everything (Except Users):</strong>
+        <div style="display: grid; gap: 8px;">
+          <div>✓ All Products</div>
+          <div>✓ All Orders & Order Items</div>
+          <div>✓ All Product Reviews</div>
+          <div>✓ All Cart Items</div>
+          <div>✓ All User Addresses</div>
+          <div style="color: #30d158; font-weight: 600;">✗ User Accounts (Preserved)</div>
+          <div style="color: #30d158; font-weight: 600;">✗ Categories (Preserved)</div>
+        </div>
+      </div>
+      
+      <div style="background: #fff3cd; padding: 16px; border-radius: 12px; margin-bottom: 20px; font-size: 14px; color: #856404;">
+        <strong style="display: block; margin-bottom: 8px;">⚠️ Note:</strong>
+        <div style="display: grid; gap: 8px;">
+          <div>• "Clear Orders Only" - Removes only orders and order items</div>
+          <div>• "Clear Products & Orders" - Removes products, which also removes orders (since orders reference products)</div>
+          <div>• "Clear Everything" - Removes all data except users and categories</div>
+        </div>
+      </div>
+
+      <button onclick="clearOrders()" class="btn btn-warning" id="clearOrdersBtn">
+        📦 Clear All Orders Only
+      </button>
+
+      <button onclick="clearProducts()" class="btn btn-warning" id="clearProductsBtn">
+        🗑️ Clear Products & Orders
+      </button>
+
+      <button onclick="clearAllExceptUsers()" class="btn btn-danger" id="clearAllBtn">
+        💥 Clear Everything (Except Users)
+      </button>
+    </div>
+
+    <!-- Repopulate Data -->
+    <div class="card">
+      <h2>🔄 Repopulate Data</h2>
+      <p>Add sample products and orders to your database</p>
+
+      <button onclick="addSampleProducts()" class="btn btn-success" id="addProductsBtn">
+        ➕ Add Sample Products (44 items)
+      </button>
+
+      <button onclick="addSampleOrders()" class="btn btn-primary" id="addOrdersBtn">
+        📋 Add Sample Orders (10 orders)
+      </button>
+
+      <button onclick="fullReset()" class="btn btn-primary" id="fullResetBtn">
+        🔄 Full Reset (Clear + Repopulate)
+      </button>
+    </div>
+  </div>
+
+  <script>
+    const API_URL = 'http://localhost:5001/api';
+
+    // Load statistics
+    async function loadStats() {
+      try {
+        const response = await fetch(`${API_URL}/admin/stats`, {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json'
+          }
+        });
+        
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        
+        const data = await response.json();
+        
+        console.log('Database stats:', data);
+        
+        document.getElementById('userCount').textContent = data.users || 0;
+        document.getElementById('productCount').textContent = data.products || 0;
+        document.getElementById('orderCount').textContent = data.orders || 0;
+        document.getElementById('reviewCount').textContent = data.reviews || 0;
+      } catch (error) {
+        console.error('Failed to load stats:', error);
+        document.getElementById('userCount').textContent = '?';
+        document.getElementById('productCount').textContent = '?';
+        document.getElementById('orderCount').textContent = '?';
+        document.getElementById('reviewCount').textContent = '?';
+        
+        // Only show error message if it's not the initial load
+        if (document.getElementById('userCount').textContent !== '-') {
+          showMessage('error', '❌ Error', 'Failed to load statistics. Make sure the server is running on port 5001.');
+        }
+      }
+    }
+
+    // Show message
+    function showMessage(type, title, message) {
+      const messageDiv = document.getElementById('message');
+      messageDiv.className = type;
+      messageDiv.innerHTML = `<strong>${title}</strong><p>${message}</p>`;
+      messageDiv.style.display = 'block';
+      
+      setTimeout(() => {
+        messageDiv.style.display = 'none';
+      }, 5000);
+    }
+
+    // Clear products
+    async function clearProducts() {
+      if (!confirm('⚠️ WARNING: This will delete all products AND all orders (since orders reference products).\n\nThis cannot be undone! Continue?')) {
+        return;
+      }
+
+      const btn = document.getElementById('clearProductsBtn');
+      btn.disabled = true;
+      btn.innerHTML = '<span class="spinner"></span> Clearing...';
+
+      try {
+        const response = await fetch(`${API_URL}/admin/clear-products`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' }
+        });
+
+        if (!response.ok) {
+          throw new Error(`Server error: ${response.status}`);
+        }
+
+        const data = await response.json();
+        
+        showMessage('success', '✅ Success', data.message || 'Products cleared successfully');
+        loadStats();
+      } catch (error) {
+        console.error('Clear products error:', error);
+        showMessage('error', '❌ Error', 'Failed to clear products. Make sure the server is running.');
+      } finally {
+        btn.disabled = false;
+        btn.innerHTML = '🗑️ Clear Products & Orders';
+      }
+    }
+
+    // Clear orders
+    async function clearOrders() {
+      if (!confirm('Are you sure you want to delete all orders? This cannot be undone!')) {
+        return;
+      }
+
+      const btn = document.getElementById('clearOrdersBtn');
+      btn.disabled = true;
+      btn.innerHTML = '<span class="spinner"></span> Clearing...';
+
+      try {
+        const response = await fetch(`${API_URL}/admin/clear-orders`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' }
+        });
+
+        if (!response.ok) {
+          throw new Error(`Server error: ${response.status}`);
+        }
+
+        const data = await response.json();
+        
+        showMessage('success', '✅ Success', data.message || 'Orders cleared successfully');
+        loadStats();
+      } catch (error) {
+        console.error('Clear orders error:', error);
+        showMessage('error', '❌ Error', 'Failed to clear orders. Make sure the server is running.');
+      } finally {
+        btn.disabled = false;
+        btn.innerHTML = '📦 Clear All Orders Only';
+      }
+    }
+
+    // Clear all except users
+    async function clearAllExceptUsers(skipConfirm = false) {
+      if (!skipConfirm && !confirm('⚠️ WARNING: This will delete ALL products, orders, reviews, cart items, and addresses.\n\nOnly user accounts will be preserved.\n\nThis cannot be undone! Continue?')) {
+        return false;
+      }
+
+      const btn = document.getElementById('clearAllBtn');
+      const originalText = btn.innerHTML;
+      btn.disabled = true;
+      btn.innerHTML = '<span class="spinner"></span> Clearing Everything...';
+
+      try {
+        const response = await fetch(`${API_URL}/admin/clear-all-except-users`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' }
+        });
+
+        if (!response.ok) {
+          throw new Error(`Server error: ${response.status}`);
+        }
+
+        const data = await response.json();
+        
+        if (!skipConfirm) {
+          showMessage('success', '✅ Success', data.message || 'All data cleared successfully');
+          loadStats();
+        }
+        return true;
+      } catch (error) {
+        console.error('Clear all error:', error);
+        if (!skipConfirm) {
+          showMessage('error', '❌ Error', 'Failed to clear data. Make sure the server is running.');
+        }
+        return false;
+      } finally {
+        btn.disabled = false;
+        btn.innerHTML = originalText;
+      }
+    }
+
+    // Add sample products
+    async function addSampleProducts() {
+      const btn = document.getElementById('addProductsBtn');
+      btn.disabled = true;
+      btn.innerHTML = '<span class="spinner"></span> Adding Products...';
+
+      try {
+        const response = await fetch(`${API_URL}/admin/populate-products`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' }
+        });
+
+        if (!response.ok) {
+          throw new Error(`Server error: ${response.status}`);
+        }
+
+        const data = await response.json();
+        
+        showMessage('success', '✅ Success', data.message || 'Products added successfully');
+        loadStats();
+      } catch (error) {
+        console.error('Add products error:', error);
+        
+        // Check if products already exist
+        if (error.message.includes('400')) {
+          if (confirm('Products already exist. Would you like to clear all data and add fresh products?')) {
+            btn.innerHTML = '<span class="spinner"></span> Clearing & Adding...';
+            
+            // Clear all data first
+            const cleared = await clearAllExceptUsers(true);
+            
+            if (cleared) {
+              // Wait a bit for the clear to complete
+              await new Promise(resolve => setTimeout(resolve, 500));
+              
+              // Try adding products again
+              try {
+                const retryResponse = await fetch(`${API_URL}/admin/populate-products`, {
+                  method: 'POST',
+                  headers: { 'Content-Type': 'application/json' }
+                });
+                
+                if (!retryResponse.ok) {
+                  throw new Error(`Server error: ${retryResponse.status}`);
+                }
+                
+                const retryData = await retryResponse.json();
+                showMessage('success', '✅ Success', retryData.message || 'Products added successfully');
+                loadStats();
+              } catch (retryError) {
+                showMessage('error', '❌ Error', 'Failed to add products after clearing.');
+              }
+            } else {
+              showMessage('error', '❌ Error', 'Failed to clear existing data');
+            }
+          }
+        } else {
+          showMessage('error', '❌ Error', 'Failed to add products. Make sure the server is running.');
+        }
+      } finally {
+        btn.disabled = false;
+        btn.innerHTML = '➕ Add Sample Products (44 items)';
+      }
+    }
+
+    // Add sample orders
+    async function addSampleOrders() {
+      const btn = document.getElementById('addOrdersBtn');
+      btn.disabled = true;
+      btn.innerHTML = '<span class="spinner"></span> Adding Orders...';
+
+      try {
+        const response = await fetch(`${API_URL}/admin/populate-orders`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' }
+        });
+
+        if (!response.ok) {
+          throw new Error(`Server error: ${response.status}`);
+        }
+
+        const data = await response.json();
+        
+        showMessage('success', '✅ Success', data.message || 'Orders added successfully');
+        loadStats();
+      } catch (error) {
+        console.error('Add orders error:', error);
+        showMessage('error', '❌ Error', 'Failed to add orders. Make sure products exist and server is running.');
+      } finally {
+        btn.disabled = false;
+        btn.innerHTML = '📋 Add Sample Orders (10 orders)';
+      }
+    }
+
+    // Full reset
+    async function fullReset() {
+      if (!confirm('🔄 FULL RESET\n\nThis will:\n1. Clear all products, orders, reviews, and cart items\n2. Add 44 fresh sample products\n3. Create 10 sample orders\n\nUser accounts will be preserved.\n\nContinue?')) {
+        return;
+      }
+
+      const btn = document.getElementById('fullResetBtn');
+      btn.disabled = true;
+      btn.innerHTML = '<span class="spinner"></span> Resetting Database...';
+
+      try {
+        // Step 1: Clear everything except users
+        showMessage('warning', '⏳ Step 1/3', 'Clearing existing data...');
+        const clearResponse = await fetch(`${API_URL}/admin/clear-all-except-users`, { 
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' }
+        });
+        
+        if (!clearResponse.ok) {
+          throw new Error(`Failed to clear data (Status: ${clearResponse.status})`);
+        }
+        
+        // Wait a moment for database operations to complete
+        await new Promise(resolve => setTimeout(resolve, 500));
+        
+        // Step 2: Add products
+        showMessage('warning', '⏳ Step 2/3', 'Adding sample products...');
+        const productsResponse = await fetch(`${API_URL}/admin/populate-products`, { 
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' }
+        });
+        
+        if (!productsResponse.ok) {
+          throw new Error(`Failed to add products (Status: ${productsResponse.status})`);
+        }
+        
+        // Wait a moment for database operations to complete
+        await new Promise(resolve => setTimeout(resolve, 500));
+        
+        // Step 3: Add orders
+        showMessage('warning', '⏳ Step 3/3', 'Creating sample orders...');
+        const ordersResponse = await fetch(`${API_URL}/admin/populate-orders`, { 
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' }
+        });
+        
+        if (!ordersResponse.ok) {
+          throw new Error(`Failed to add orders (Status: ${ordersResponse.status})`);
+        }
+        
+        showMessage('success', '✅ Complete!', 'Database has been reset with 44 products and 10 orders!');
+        
+        // Wait a moment before refreshing stats
+        await new Promise(resolve => setTimeout(resolve, 500));
+        loadStats();
+      } catch (error) {
+        console.error('Full reset error:', error);
+        showMessage('error', '❌ Error', 'Failed to reset database. Make sure the server is running on port 5001.');
+      } finally {
+        btn.disabled = false;
+        btn.innerHTML = '🔄 Full Reset (Clear + Repopulate)';
+      }
+    }
+
+    // Check server connection and load stats on page load
+    async function checkServerConnection() {
+      try {
+        const response = await fetch(`${API_URL}/health`, {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json'
+          }
+        });
+        
+        if (response.ok) {
+          console.log('✅ Server is running');
+          loadStats();
+        } else {
+          throw new Error('Server responded with error');
+        }
+      } catch (error) {
+        console.error('❌ Server connection failed:', error);
+        document.getElementById('userCount').textContent = '?';
+        document.getElementById('productCount').textContent = '?';
+        document.getElementById('orderCount').textContent = '?';
+        document.getElementById('reviewCount').textContent = '?';
+        
+        showMessage('error', '❌ Server Not Running', 
+          'Cannot connect to server at http://localhost:5001. Please start the server:<br><br>' +
+          '<code style="background: #f5f5f5; padding: 8px; border-radius: 4px; display: block; margin-top: 8px;">cd server<br>npm run dev</code>');
+      }
+    }
+    
+    // Run connection check on page load
+    checkServerConnection();
+  </script>
+</body>
+</html>

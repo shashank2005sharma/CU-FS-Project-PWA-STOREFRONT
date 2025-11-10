@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <link rel="icon" href="%PUBLIC_URL%/favicon.ico" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#000000" />
+    <meta name="description" content="PWA Ecommerce Store - Shop online with offline capabilities" />
+    
+    <!-- PWA Meta Tags -->
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="apple-mobile-web-app-title" content="PWA Store">
+    
+    <link rel="apple-touch-icon" href="%PUBLIC_URL%/icon-192.svg" />
+    <link rel="manifest" href="%PUBLIC_URL%/manifest.json" />
+    
+    <title>PWA Ecommerce Store</title>
+  </head>
+  <body>
+    <noscript>You need to enable JavaScript to run this app.</noscript>
+    <div id="root"></div>
+    
+    <script>
+      // Register service worker with better error handling
+      if ('serviceWorker' in navigator) {
+        window.addEventListener('load', () => {
+          navigator.serviceWorker.register('/sw.js', { scope: '/' })
+            .then((registration) => {
+              console.log('SW registered: ', registration);
+              
+              // Handle updates - but don't auto-reload
+              registration.addEventListener('updatefound', () => {
+                const newWorker = registration.installing;
+                newWorker.addEventListener('statechange', () => {
+                  if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
+                    // New service worker available, but don't force reload
+                    console.log('New content available. Refresh to update.');
+                  }
+                });
+              });
+            })
+            .catch((error) => {
+              console.error('SW registration failed:', error);
+            });
+          
+          // Handle service worker messages
+          navigator.serviceWorker.addEventListener('message', (event) => {
+            if (event.data && event.data.type === 'CACHE_UPDATED') {
+              console.log('Cache updated:', event.data.url);
+            }
+          });
+        });
+        
+        // Handle online/offline events
+        window.addEventListener('online', () => {
+          console.log('Back online');
+          document.body.classList.remove('offline');
+        });
+        
+        window.addEventListener('offline', () => {
+          console.log('Gone offline');
+          document.body.classList.add('offline');
+        });
+      }
+    </script>
+  </body>
+</html>
