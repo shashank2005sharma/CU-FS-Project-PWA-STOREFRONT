@@ -5,22 +5,22 @@ A complete Progressive Web App ecommerce platform with customer storefront and a
 ## 🚀 Features
 
 ### Customer Features
-- �️ **Prodguct Catalog**: Browse products with categories, search, and pagination
-- � **Shoapping Cart**: Add/remove items, quantity management, persistent cart
-- � **dUser Accounts**: Registration, login, profile management
-- � *a*Order Management**: Place orders, view history, track shipments
-- 📍 **Address Book**: Save multiple shipping/billing addresses
-- ⭐ **Product Reviews**: Rate and review purchased products (verified purchases only)
-- � J**PWA Features**: Offline browsing, installable app, push notifications
-- 🔒 **Security**: JWT authentication, secure password hashing
+- **Prodguct Catalog**: Browse products with categories, search, and pagination
+- **Shoapping Cart**: Add/remove items, quantity management, persistent cart
+- **User Accounts**: Registration, login, profile management
+- a*Order Management**: Place orders, view history, track shipments
+- **Address Book**: Save multiple shipping/billing addresses
+- **Product Reviews**: Rate and review purchased products (verified purchases only)
+- **PWA Features**: Offline browsing, installable app, push notifications
+- **Security**: JWT authentication, secure password hashing
 
 ### Admin Features
-- 📊 **Dashboard**: Overview statistics, recent orders, revenue analytics
-- 🛒 **Order Management**: Update order status, add tracking numbers, view details
-- 👥 **User Management**: View customer information, order history, statistics
-- 📦 **Product Management**: Add/edit/delete products, manage inventory, toggle status
-- 🔍 **Search & Filter**: Advanced search across orders, users, and products
-- 📈 **Analytics**: Order status distribution, revenue tracking
+- **Dashboard**: Overview statistics, recent orders, revenue analytics
+- **Order Management**: Update order status, add tracking numbers, view details
+- **User Management**: View customer information, order history, statistics
+- **Product Management**: Add/edit/delete products, manage inventory, toggle status
+- **Search & Filter**: Advanced search across orders, users, and products
+- **Analytics**: Order status distribution, revenue tracking
 
 ## 🛠️ Tech Stack
 
@@ -160,7 +160,7 @@ pwa-ecommerce/
 - `GET /api/admin/users` - Manage users
 - `GET /api/admin/products` - Manage products
 
-## 🎯 Key Features Explained
+## Key Features Explained
 
 ### Progressive Web App (PWA)
 - **Service Worker**: Caches products, images, and API responses for offline browsing
@@ -187,7 +187,7 @@ pwa-ecommerce/
 - **Password Security**: bcrypt hashing with salt rounds
 - **CORS Protection**: Configured for development and production
 
-## 🧪 Testing the Application
+## Testing the Application
 
 ### Test PWA Features
 1. Open Chrome DevTools > Application > Service Workers
@@ -221,25 +221,6 @@ DB_NAME=pwa_ecommerce
 JWT_SECRET=your_super_secure_production_jwt_secret
 ```
 
-### Build for Production
-```bash
-# Build client
-cd client
-npm run build
-
-# The build folder contains optimized production files
-# Serve these files with your web server (nginx, Apache, etc.)
-```
-
-### Database Migration
-```bash
-# Export development data
-mysqldump -u root -p pwa_ecommerce > backup.sql
-
-# Import to production
-mysql -u production_user -p production_db < backup.sql
-```
-
 ## 🤝 Contributing
 
 1. Fork the repository
@@ -248,21 +229,5 @@ mysql -u production_user -p production_db < backup.sql
 4. Push to the branch (`git push origin feature/amazing-feature`)
 5. Open a Pull Request
 
-## 📝 License
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
-## 🆘 Support
-
-For support and questions:
-- Create an issue in the repository
-- Check the documentation in the `/docs` folder
-- Review the API endpoints and test with provided accounts
-
-## 🎉 Acknowledgments
-
-- React team for the amazing framework
-- Express.js for the robust backend framework
-- MySQL for reliable database management
-- Lucide React for beautiful icons
-- All contributors and testers
